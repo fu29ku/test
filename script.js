@@ -1,18 +1,16 @@
-// ▼ 仮データ（明日会社で聞いたらここだけ差し替えればOK）
+// ▼ 仮データ（明日差し替えOK）
 const data = [
   { maker: "トヨタ", car: "プリウス", model: "ZVW30", year: "2010", grade: "S", engine: "2ZR", drive: "2WD", filter: "ABC-123", rakuten: "#", yahoo: "#" },
-  { maker: "トヨタ", car: "プリウス", model: "ZVW30", year: "2012", grade: "G", engine: "2ZR", drive: "2WD", filter: "ABC-123", rakuten: "#", yahoo: "#" },
   { maker: "ホンダ", car: "N-BOX", model: "JF1", year: "2015", grade: "G", engine: "S07A", drive: "4WD", filter: "XYZ-999", rakuten: "#", yahoo: "#" }
 ];
 
-// ▼ 車種ごとの「必要な質問項目」ルール（仮）
+// ▼ 車種ごとの必要項目（仮）
 const carRules = {
   "プリウス": { required: ["model", "year"] },
-  "N-BOX": { required: ["model", "year", "grade"] },
-  "ハリアー": { required: ["model", "engine", "drive"] }
+  "N-BOX": { required: ["model", "year", "grade"] }
 };
 
-// ▼ メーカー一覧を作成
+// ▼ メーカー一覧
 window.onload = function() {
   const makerSelect = document.getElementById("maker");
   const makers = [...new Set(data.map(item => item.maker))];
@@ -25,119 +23,145 @@ window.onload = function() {
   });
 };
 
-// ▼ メーカー選択 → 車名更新
+// ▼ メーカー → 車名
 function updateCarNames() {
-  const maker = document.getElementById("maker").value;
-  const carSelect = document.getElementById("carName");
-  carSelect.innerHTML = '<option value="">選択してください</option>';
+  const maker = maker.value;
+  carName.innerHTML = '<option value="">選択してください</option>';
 
-  const cars = [...new Set(
-    data.filter(item => item.maker === maker).map(item => item.car)
-  )];
+  const cars = [...new Set(data.filter(i => i.maker === maker).map(i => i.car))];
 
   cars.forEach(c => {
-    const option = document.createElement("option");
-    option.value = c;
-    option.textContent = c;
-    carSelect.appendChild(option);
+    const op = document.createElement("option");
+    op.value = c;
+    op.textContent = c;
+    carName.appendChild(op);
   });
 
-  document.getElementById("model").innerHTML = '<option value="">選択してください</option>';
+  model.innerHTML = '<option value="">選択してください</option>';
   hideAllDynamicFields();
 }
 
-// ▼ 車名選択 → 型式更新
+// ▼ 車名 → 型式
 function updateModels() {
-  const maker = document.getElementById("maker").value;
-  const car = document.getElementById("carName").value;
-  const modelSelect = document.getElementById("model");
-  modelSelect.innerHTML = '<option value="">選択してください</option>';
+  const makerVal = maker.value;
+  const carVal = carName.value;
 
-  const models = [...new Set(
-    data.filter(item => item.maker === maker && item.car === car).map(item => item.model)
-  )];
+  model.innerHTML = '<option value="">選択してください</option>';
+
+  const models = [...new Set(data.filter(i =>
+    i.maker === makerVal && i.car === carVal
+  ).map(i => i.model))];
 
   models.forEach(m => {
-    const option = document.createElement("option");
-    option.value = m;
-    option.textContent = m;
-    modelSelect.appendChild(option);
+    const op = document.createElement("option");
+    op.value = m;
+    op.textContent = m;
+    model.appendChild(op);
   });
 
   hideAllDynamicFields();
 }
 
-// ▼ 型式選択 → 必要な質問項目だけ表示
+// ▼ 型式 → 必要項目だけ表示
 function updateDynamicQuestions() {
   hideAllDynamicFields();
 
-  const car = document.getElementById("carName").value;
-  const rule = carRules[car] || { required: [] };
+  const carVal = carName.value;
+  const rule = carRules[carVal] || { required: [] };
 
   rule.required.forEach(key => {
-    const fieldId = key + "Field";
-    const field = document.getElementById(fieldId);
+    const field = document.getElementById(key + "Field");
     if (field) field.style.display = "block";
 
-    // ▼ 選択肢を自動生成
     const select = document.getElementById(key);
-    if (select) {
-      const maker = document.getElementById("maker").value;
-      const model = document.getElementById("model").value;
+    const makerVal = maker.value;
+    const modelVal = model.value;
 
-      const values = [...new Set(
-        data
-          .filter(item => item.maker === maker && item.car === car && item.model === model)
-          .map(item => item[key])
-      )];
+    const values = [...new Set(
+      data.filter(i =>
+        i.maker === makerVal &&
+        i.car === carVal &&
+        i.model === modelVal
+      ).map(i => i[key])
+    )];
 
-      select.innerHTML = "";
-      values.forEach(v => {
-        const option = document.createElement("option");
-        option.value = v;
-        option.textContent = v;
-        select.appendChild(option);
-      });
-    }
+    select.innerHTML = "";
+    values.forEach(v => {
+      const op = document.createElement("option");
+      op.value = v;
+      op.textContent = v;
+      select.appendChild(op);
+    });
   });
 }
 
-// ▼ 全ての追加項目を非表示
+// ▼ 全項目非表示
 function hideAllDynamicFields() {
   ["yearField", "gradeField", "engineField", "driveField"].forEach(id => {
     document.getElementById(id).style.display = "none";
   });
 }
 
+// ▼ 入力チェック
+function validateForm() {
+  const carVal = carName.value;
+  const rule = carRules[carVal] || { required: [] };
+
+  if (!maker.value || !carName.value || !model.value) {
+    disableSearch("すべて選択してください");
+    return;
+  }
+
+  for (const key of rule.required) {
+    if (!document.getElementById(key).value) {
+      disableSearch("すべて選択してください");
+      return;
+    }
+  }
+
+  enableSearch();
+}
+
+function disableSearch(msg) {
+  searchBtn.disabled = true;
+  errorMsg.textContent = msg;
+}
+
+function enableSearch() {
+  searchBtn.disabled = false;
+  errorMsg.textContent = "";
+}
+
 // ▼ 検索
 function searchFilter() {
-  const maker = document.getElementById("maker").value;
-  const car = document.getElementById("carName").value;
-  const model = document.getElementById("model").value;
+  validateForm();
+  if (searchBtn.disabled) return;
 
-  let filtered = data.filter(item =>
-    item.maker === maker &&
-    item.car === car &&
-    item.model === model
+  const makerVal = maker.value;
+  const carVal = carName.value;
+  const modelVal = model.value;
+
+  let filtered = data.filter(i =>
+    i.maker === makerVal &&
+    i.car === carVal &&
+    i.model === modelVal
   );
 
-  const rule = carRules[car] || { required: [] };
-
+  const rule = carRules[carVal] || { required: [] };
   rule.required.forEach(key => {
-    const value = document.getElementById(key).value;
-    filtered = filtered.filter(item => item[key] === value);
+    const val = document.getElementById(key).value;
+    filtered = filtered.filter(i => i[key] === val);
   });
 
-  const result = document.getElementById("result");
-
-  if (filtered.length > 0) {
-    const hit = filtered[0];
-    result.innerHTML = `
-      <p>適合フィルター品番：<strong>${hit.filter}</strong></p>
-      <a href="${hit.rakuten}">楽天で見る</a>
-      <a href="${hit.yahoo}">Yahooで見る</a>
-    `;
-  } else {
+  if (filtered.length === 0) {
     result.textContent = "該当データがありません。";
+    return;
   }
+
+  const hit = filtered[0];
+  result.innerHTML = `
+    <p>適合フィルター品番：<strong>${hit.filter}</strong></p>
+    <a href="${hit.rakuten}">楽天で見る</a>
+    <a href="${hit.yahoo}">Yahooで見る</a>
+  `;
 }
