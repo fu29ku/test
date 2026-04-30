@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>エアコンフィルター適合検索</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,17 +14,17 @@
   <div class="form">
 
     <label>メーカー</label>
-    <select id="maker" onchange="updateCarNames()">
+    <select id="maker" onchange="updateCarNames(); validateForm();">
       <option value="">選択してください</option>
     </select>
 
     <label>車名</label>
-    <select id="carName" onchange="updateModels()">
+    <select id="carName" onchange="updateModels(); validateForm();">
       <option value="">選択してください</option>
     </select>
 
     <label>型式</label>
-    <select id="model" onchange="updateDynamicQuestions()">
+    <select id="model" onchange="updateDynamicQuestions(); validateForm();">
       <option value="">選択してください</option>
     </select>
 
@@ -31,25 +32,27 @@
 
     <div id="yearField" class="dynamic-field" style="display:none;">
       <label>年式</label>
-      <select id="year"></select>
+      <select id="year" onchange="validateForm()"></select>
     </div>
 
     <div id="gradeField" class="dynamic-field" style="display:none;">
       <label>グレード</label>
-      <select id="grade"></select>
+      <select id="grade" onchange="validateForm()"></select>
     </div>
 
     <div id="engineField" class="dynamic-field" style="display:none;">
       <label>エンジン型式</label>
-      <select id="engine"></select>
+      <select id="engine" onchange="validateForm()"></select>
     </div>
 
     <div id="driveField" class="dynamic-field" style="display:none;">
       <label>駆動方式</label>
-      <select id="drive"></select>
+      <select id="drive" onchange="validateForm()"></select>
     </div>
 
-    <button onclick="searchFilter()">検索する</button>
+    <button id="searchBtn" onclick="searchFilter()" disabled>検索する</button>
+    <p id="errorMsg" class="error"></p>
+
   </div>
 
   <div id="result"></div>
