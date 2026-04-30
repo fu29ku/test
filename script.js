@@ -92,7 +92,7 @@ function updateDynamicQuestions() {
       ).map(i => i[key])
     )];
 
-    select.innerHTML = "";
+    select.innerHTML = '<option value="">選択してください</option>';
     values.forEach(v => {
       const op = document.createElement("option");
       op.value = v;
