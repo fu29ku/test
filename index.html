@@ -1,1 +1,29 @@
-あ
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>エアコンフィルター適合システム</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>エアコンフィルター適合検索</h1>
+
+  <div class="form">
+    <label>メーカー</label>
+    <input id="maker" type="text" placeholder="例：トヨタ">
+
+    <label>車名</label>
+    <input id="carName" type="text" placeholder="例：プリウス">
+
+    <label>型式</label>
+    <input id="model" type="text" placeholder="例：DAA-ZVW30">
+
+    <button onclick="searchFilter()">検索</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
