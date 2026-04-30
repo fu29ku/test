@@ -1,32 +1,36 @@
-// ▼ 仮データ（明日差し替えOK）
+// ▼ 仮データ（明日会社で正式データに差し替え）
 const data = [
-  { 
-    maker: "トヨタ", 
-    car: "プリウス", 
-    model: "ZVW30", 
-    year: "2010", 
-    grade: "S", 
-    engine: "2ZR", 
-    drive: "2WD", 
-    filter: "ABC-123",
-    rakuten: "https://item.rakuten.co.jp/rakuten/12345",
-    yahoo: "https://store.shopping.yahoo.co.jp/yahoo/12345"
+  {
+    maker: "トヨタ",
+    car: "プリウス",
+    model: "ZVW30",
+    year: "2010",
+    grade: "S",
+    engine: "2ZR",
+    drive: "2WD",
+    products: [
+      { code: "A123", label: "自社 高性能タイプ", type: "A", priority: 1 },
+      { code: "A124", label: "自社 標準タイプ", type: "A", priority: 2 },
+      { code: "B555", label: "他社 標準タイプ", type: "B", priority: 3 }
+    ]
   },
-  { 
-    maker: "ホンダ", 
-    car: "N-BOX", 
-    model: "JF1", 
-    year: "2015", 
-    grade: "G", 
-    engine: "S07A", 
-    drive: "4WD", 
-    filter: "XYZ-999",
-    rakuten: "https://item.rakuten.co.jp/rakuten/12345",
-    yahoo: "https://store.shopping.yahoo.co.jp/yahoo/12345"
+  {
+    maker: "ホンダ",
+    car: "N-BOX",
+    model: "JF1",
+    year: "2015",
+    grade: "G",
+    engine: "S07A",
+    drive: "4WD",
+    products: [
+      { code: "B999", label: "他社 標準タイプ", type: "B", priority: 2 },
+      { code: "C777", label: "他社 廉価タイプ", type: "C", priority: 3 }
+    ]
   }
 ];
 
 // ▼ 車種ごとの必要項目（仮）
+// ※ ここは明日会社で聞いた内容に合わせて書き換えればOK
 const carRules = {
   "プリウス": { required: ["year"] },
   "N-BOX": { required: ["year", "grade"] }
@@ -180,18 +184,21 @@ function searchFilter() {
   const makerVal = document.getElementById("maker").value;
   const carVal = document.getElementById("carName").value;
   const modelVal = document.getElementById("model").value;
+  const yearVal = document.getElementById("year")?.value || null;
+  const gradeVal = document.getElementById("grade")?.value || null;
+  const engineVal = document.getElementById("engine")?.value || null;
+  const driveVal = document.getElementById("drive")?.value || null;
 
+  // まず車両条件で1件に絞る（実務ではここが1行になる想定）
   let filtered = data.filter(i =>
     i.maker === makerVal &&
     i.car === carVal &&
-    i.model === modelVal
+    i.model === modelVal &&
+    (yearVal ? i.year === yearVal : true) &&
+    (gradeVal ? i.grade === gradeVal : true) &&
+    (engineVal ? i.engine === engineVal : true) &&
+    (driveVal ? i.drive === driveVal : true)
   );
-
-  const rule = carRules[carVal] || { required: [] };
-  rule.required.forEach(key => {
-    const val = document.getElementById(key).value;
-    filtered = filtered.filter(i => i[key] === val);
-  });
 
   const result = document.getElementById("result");
 
@@ -201,9 +208,34 @@ function searchFilter() {
   }
 
   const hit = filtered[0];
+
+  // ▼ 商品リストを優先順位順に並べ替え
+  const products = [...(hit.products || [])].sort((a, b) => a.priority - b.priority);
+
+  if (products.length === 0) {
+    result.textContent = "該当データはありますが、商品情報が登録されていません。";
+    return;
+  }
+
+  // ▼ A があれば A だけ表示、なければ全部表示
+  const hasA = products.some(p => p.type === "A");
+  const toShow = hasA ? products.filter(p => p.type === "A") : products;
+
+  // ▼ 検索リンク生成
+  const html = toShow.map(p => {
+    const rakutenUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(p.code)}/`;
+    const yahooUrl = `https://shopping.yahoo.co.jp/search?p=${encodeURIComponent(p.code)}`;
+    return `
+      <div class="product">
+        <p>品番：<strong>${p.code}</strong>（${p.label}）</p>
+        <a href="${rakutenUrl}" target="_blank">楽天で検索する</a>
+        <a href="${yahooUrl}" target="_blank">Yahooで検索する</a>
+      </div>
+    `;
+  }).join("");
+
   result.innerHTML = `
-    <p>適合フィルター品番：<strong>${hit.filter}</strong></p>
-    <a href="${hit.rakuten}">楽天で見る</a>
-    <a href="${hit.yahoo}">Yahooで見る</a>
+    <p>この車に適合するエアコンフィルター：</p>
+    ${html}
   `;
 }
