@@ -17,37 +17,44 @@
     <select id="maker" onchange="updateCarNames(); validateForm();">
       <option value="">選択してください</option>
     </select>
+    <p class="hint">※ 車検証の「車名」欄を確認してください</p>
 
     <label>車名</label>
     <select id="carName" onchange="updateModels(); validateForm();">
       <option value="">選択してください</option>
     </select>
+    <p class="hint">※ 車検証の「車名」欄を確認してください</p>
 
     <label>型式</label>
     <select id="model" onchange="updateDynamicQuestions(); validateForm();">
       <option value="">選択してください</option>
     </select>
+    <p class="hint">※ 車検証の「型式」欄を確認してください</p>
 
     <!-- ▼ 動的に表示される追加質問 ▼ -->
 
     <div id="yearField" class="dynamic-field" style="display:none;">
       <label>年式</label>
       <select id="year" onchange="validateForm()"></select>
+      <p class="hint">※ 車検証の「初度登録年月」を確認してください</p>
     </div>
 
     <div id="gradeField" class="dynamic-field" style="display:none;">
       <label>グレード</label>
       <select id="grade" onchange="validateForm()"></select>
+      <p class="hint">※ グレードは車検証に記載がないため、カタログや仕様で確認してください</p>
     </div>
 
     <div id="engineField" class="dynamic-field" style="display:none;">
       <label>エンジン型式</label>
       <select id="engine" onchange="validateForm()"></select>
+      <p class="hint">※ 車検証の「原動機の型式」を確認してください</p>
     </div>
 
     <div id="driveField" class="dynamic-field" style="display:none;">
       <label>駆動方式</label>
       <select id="drive" onchange="validateForm()"></select>
+      <p class="hint">※ 駆動方式（2WD/4WD）は車種仕様で確認してください</p>
     </div>
 
     <button id="searchBtn" onclick="searchFilter()" disabled>検索する</button>
