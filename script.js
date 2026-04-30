@@ -1,7 +1,29 @@
 // ▼ 仮データ（明日差し替えOK）
 const data = [
-  { maker: "トヨタ", car: "プリウス", model: "ZVW30", year: "2010", grade: "S", engine: "2ZR", drive: "2WD", filter: "ABC-123", rakuten: "#", yahoo: "#" },
-  { maker: "ホンダ", car: "N-BOX", model: "JF1", year: "2015", grade: "G", engine: "S07A", drive: "4WD", filter: "XYZ-999", rakuten: "#", yahoo: "#" }
+  { 
+    maker: "トヨタ", 
+    car: "プリウス", 
+    model: "ZVW30", 
+    year: "2010", 
+    grade: "S", 
+    engine: "2ZR", 
+    drive: "2WD", 
+    filter: "ABC-123",
+    rakuten: "https://item.rakuten.co.jp/rakuten/12345",
+    yahoo: "https://store.shopping.yahoo.co.jp/yahoo/12345"
+  },
+  { 
+    maker: "ホンダ", 
+    car: "N-BOX", 
+    model: "JF1", 
+    year: "2015", 
+    grade: "G", 
+    engine: "S07A", 
+    drive: "4WD", 
+    filter: "XYZ-999",
+    rakuten: "https://item.rakuten.co.jp/rakuten/12345",
+    yahoo: "https://store.shopping.yahoo.co.jp/yahoo/12345"
+  }
 ];
 
 // ▼ 車種ごとの必要項目（仮）
@@ -81,7 +103,7 @@ function updateDynamicQuestions() {
     if (field) field.style.display = "block";
 
     const select = document.getElementById(key);
-    if (!select) return;  // ← Copilot の指摘反映
+    if (!select) return;
 
     const makerVal = document.getElementById("maker").value;
     const modelVal = document.getElementById("model").value;
@@ -106,7 +128,7 @@ function updateDynamicQuestions() {
   validateForm();
 }
 
-// ▼ 全項目非表示（nullチェック追加）
+// ▼ 全項目非表示
 function hideAllDynamicFields() {
   ["yearField", "gradeField", "engineField", "driveField"].forEach(id => {
     const element = document.getElementById(id);
@@ -114,7 +136,7 @@ function hideAllDynamicFields() {
   });
 }
 
-// ▼ 入力チェック（nullチェック追加）
+// ▼ 入力チェック
 function validateForm() {
   const makerVal = document.getElementById("maker").value;
   const carVal = document.getElementById("carName").value;
