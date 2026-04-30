@@ -61,6 +61,14 @@ button:disabled {
   text-align: center;
 }
 
+.hint {
+  font-size: 12px;
+  color: #777;
+  margin-top: -8px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
 #result {
   margin-top: 25px;
   padding: 20px;
