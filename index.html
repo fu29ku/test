@@ -2,24 +2,54 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>エアコンフィルター適合システム</title>
+  <title>エアコンフィルター適合検索</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <h1>エアコンフィルター適合検索</h1>
+  <p class="desc">車種によって必要な項目が変わります。車検証をお手元にご用意ください。</p>
 
   <div class="form">
+
     <label>メーカー</label>
-    <input id="maker" type="text" placeholder="例：トヨタ">
+    <select id="maker" onchange="updateCarNames()">
+      <option value="">選択してください</option>
+    </select>
 
     <label>車名</label>
-    <input id="carName" type="text" placeholder="例：プリウス">
+    <select id="carName" onchange="updateModels()">
+      <option value="">選択してください</option>
+    </select>
 
     <label>型式</label>
-    <input id="model" type="text" placeholder="例：DAA-ZVW30">
+    <select id="model" onchange="updateDynamicQuestions()">
+      <option value="">選択してください</option>
+    </select>
 
-    <button onclick="searchFilter()">検索</button>
+    <!-- ▼ 動的に表示される追加質問 ▼ -->
+
+    <div id="yearField" class="dynamic-field" style="display:none;">
+      <label>年式</label>
+      <select id="year"></select>
+    </div>
+
+    <div id="gradeField" class="dynamic-field" style="display:none;">
+      <label>グレード</label>
+      <select id="grade"></select>
+    </div>
+
+    <div id="engineField" class="dynamic-field" style="display:none;">
+      <label>エンジン型式</label>
+      <select id="engine"></select>
+    </div>
+
+    <div id="driveField" class="dynamic-field" style="display:none;">
+      <label>駆動方式</label>
+      <select id="drive"></select>
+    </div>
+
+    <button onclick="searchFilter()">検索する</button>
   </div>
 
   <div id="result"></div>
