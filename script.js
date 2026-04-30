@@ -81,6 +81,8 @@ function updateDynamicQuestions() {
     if (field) field.style.display = "block";
 
     const select = document.getElementById(key);
+    if (!select) return;  // ← Copilot の指摘反映
+
     const makerVal = document.getElementById("maker").value;
     const modelVal = document.getElementById("model").value;
 
@@ -104,14 +106,15 @@ function updateDynamicQuestions() {
   validateForm();
 }
 
-// ▼ 全項目非表示
+// ▼ 全項目非表示（nullチェック追加）
 function hideAllDynamicFields() {
   ["yearField", "gradeField", "engineField", "driveField"].forEach(id => {
-    document.getElementById(id).style.display = "none";
+    const element = document.getElementById(id);
+    if (element) element.style.display = "none";
   });
 }
 
-// ▼ 入力チェック
+// ▼ 入力チェック（nullチェック追加）
 function validateForm() {
   const makerVal = document.getElementById("maker").value;
   const carVal = document.getElementById("carName").value;
@@ -125,7 +128,8 @@ function validateForm() {
   }
 
   for (const key of rule.required) {
-    if (!document.getElementById(key).value) {
+    const field = document.getElementById(key);
+    if (!field || !field.value) {
       disableSearch("すべて選択してください");
       return;
     }
